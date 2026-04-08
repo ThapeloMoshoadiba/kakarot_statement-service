@@ -16,7 +16,7 @@
 <body>
 
 <div class="header">
-    <div class="bank-name">My Bank</div>
+    <div class="bank-name">Capsule Corp Bank</div>
     <div>Account Statement</div>
 </div>
 
@@ -37,8 +37,8 @@
     </thead>
     <tbody>
     <tr th:each="tx : ${transactions}">
-        <td th:text="${tx.date}"></td>
-        <td th:text="${tx.reference}"></td>
+        <td th:text="${tx.timestamp}"></td>
+        <td th:text="${tx.transactionId}"></td>
         <td th:text="${tx.transactionType}"></td>
         <td class="right" th:text="${tx.amount != null ? #numbers.formatDecimal(tx.amount, 1, 2) : '-'}">></td>
     </tr>

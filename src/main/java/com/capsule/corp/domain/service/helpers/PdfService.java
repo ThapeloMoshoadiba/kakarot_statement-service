@@ -1,4 +1,4 @@
-package com.capsule.corp.domain.service;
+package com.capsule.corp.domain.service.helpers;
 
 import static com.capsule.corp.infrastructure.http.resources.Constants.STATEMENTS_BASE_PATH;
 

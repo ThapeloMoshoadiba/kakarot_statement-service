@@ -3,6 +3,7 @@ package com.capsule.corp.infrastructure.http.controller;
 import static com.capsule.corp.infrastructure.http.resources.Constants.STATEMENTS_BASE_PATH;
 
 import com.capsule.corp.domain.service.StatementService;
+import com.capsule.corp.infrastructure.http.controller.response.StatementResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,8 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +35,7 @@ public class StatementController {
 
   @Operation(summary = "Request Statement")
   @GetMapping
-  public String requestStatement(
+  public ResponseEntity<StatementResponse> requestStatement(
       final HttpServletRequest urlData, @RequestParam final UUID accountNumber) {
     return statementService.requestStatement(urlData, accountNumber);
   }
@@ -45,12 +44,6 @@ public class StatementController {
   @GetMapping("/{extension}")
   @Hidden
   public ResponseEntity<byte[]> getStatement(@PathVariable String extension) {
-    byte[] byteStatement = statementService.getStatement(extension);
-
-    return ResponseEntity.ok()
-        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=statement.pdf")
-        .contentType(MediaType.APPLICATION_PDF)
-        .contentLength(byteStatement.length)
-        .body(byteStatement);
+    return statementService.getStatement(extension);
   }
 }
