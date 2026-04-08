@@ -40,7 +40,7 @@
         <td th:text="${tx.date}"></td>
         <td th:text="${tx.reference}"></td>
         <td th:text="${tx.transactionType}"></td>
-        <td class="right" th:text="${tx.amount != null} ? ${#numbers.formatDecimal(tx.amount, 2, 'POINT')} : '-'"></td>
+        <td class="right" th:text="${tx.amount != null ? #numbers.formatDecimal(tx.amount, 1, 2) : '-'}">></td>
     </tr>
     </tbody>
 </table>
@@ -49,7 +49,7 @@
     <table>
         <tr>
             <td><b>Balance</b></td>
-            <td class="right" th:text="${#numbers.formatDecimal(balance, 2, 'POINT')}"></td>
+            <td class="right" th:text="${#numbers.formatDecimal(balance, 1, 2)}"></td>
         </tr>
     </table>
 </div>

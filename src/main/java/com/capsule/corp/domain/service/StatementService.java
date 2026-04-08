@@ -28,31 +28,31 @@ public class StatementService {
   private final TransactionsServiceClient transactionsServiceClient;
 
   public String requestStatement(final HttpServletRequest urlData, final UUID accountNumber) {
-
-    String link = null;
+    log.info("StatementService.requestStatement()");
     AccountDetailedResponse accountDetails = accountServiceClient.getAccount(accountNumber);
 
     if (accountDetails.isSuccess()) {
       TransactionsResponse transactionsDetails =
           transactionsServiceClient.getTransactions(accountNumber);
+      log.info("Transactions found: [{}}", transactionsDetails);
       byte[] statementFile = pdfService.generatePdfStatement(accountDetails, transactionsDetails);
       String extension = pdfService.generateExtension();
 
       Statement statement = statementMapper.mapStatement(statementFile, extension);
       statementRepository.save(statement);
 
-      link =
-          (urlData.getScheme() + "://" + urlData.getServerName() + ":" + urlData.getServerPort())
-              .concat(extension);
+      return pdfService.generateLink(urlData, extension);
     }
 
-    return link;
+    return null;
   }
 
   public byte[] getStatement(final String extension) {
 
+    log.info("StatementService.getStatement()");
     byte[] statementFile = null;
     Optional<Statement> statement = statementRepository.findByExtension(extension);
+    log.info("Statement Search Response: [{}]", statement);
 
     if (statement.isPresent()) {
       validateLink(statement.get());
@@ -65,6 +65,7 @@ public class StatementService {
   }
 
   private void validateLink(Statement statement) {
+    log.info("StatementService.validateLink()");
     Duration duration = Duration.between(statement.getCreatedAt(), LocalDateTime.now());
 
     if (Math.abs(duration.toMinutes()) > 5) {

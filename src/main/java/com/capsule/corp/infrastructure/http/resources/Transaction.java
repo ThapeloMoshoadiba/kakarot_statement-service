@@ -1,9 +1,6 @@
 package com.capsule.corp.infrastructure.http.resources;
 
-import com.capsule.corp.infrastructure.http.resources.enums.EntryType;
-import com.capsule.corp.infrastructure.http.resources.enums.TransactionType;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,14 +13,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Transaction {
 
-  UUID transactionId;
-
+  String transactionId;
   UUID accountNumber;
-  LocalDateTime timestamp;
+  String timestamp;
   BigDecimal amount;
   String initiator;
-
-  TransactionType transactionType;
-
-  EntryType entryType;
+  String transactionType;
+  String entryType;
 }

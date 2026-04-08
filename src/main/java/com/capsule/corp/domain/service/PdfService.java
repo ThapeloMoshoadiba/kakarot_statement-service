@@ -1,9 +1,12 @@
 package com.capsule.corp.domain.service;
 
+import static com.capsule.corp.infrastructure.http.resources.Constants.STATEMENTS_BASE_PATH;
+
 import com.capsule.corp.domain.mapper.StatementMapper;
 import com.capsule.corp.domain.service.resources.StatementTransaction;
 import com.capsule.corp.infrastructure.http.clients.accounts.resources.AccountDetailedResponse;
 import com.capsule.corp.infrastructure.http.clients.transactions.resources.TransactionsResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +33,8 @@ public class PdfService {
     List<StatementTransaction> statementTransactions =
         statementMapper.mapStatementTransactions(transactionsResponse.getTransactions());
 
+    log.info("Transactions for PDF statement: [{}}", statementTransactions);
+
     Context context = new Context();
     context.setVariable(
         "accountHolder",
@@ -54,6 +59,11 @@ public class PdfService {
   }
 
   public String generateExtension() {
-    return "/".concat(UUID.randomUUID().toString().replace("-", ""));
+    return UUID.randomUUID().toString().replace("-", "");
+  }
+
+  public String generateLink(final HttpServletRequest urlData, final String extension) {
+    return (urlData.getScheme() + "://" + urlData.getServerName() + ":" + urlData.getServerPort())
+        .concat(STATEMENTS_BASE_PATH + "/" + extension);
   }
 }
