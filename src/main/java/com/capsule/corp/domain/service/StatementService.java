@@ -1,73 +1,76 @@
 package com.capsule.corp.domain.service;
 
+import com.capsule.corp.common.exceptions.LinkExpiredException;
+import com.capsule.corp.domain.mapper.StatementMapper;
 import com.capsule.corp.domain.persistance.StatementRepository;
-import com.capsule.corp.infrastructure.http.controller.clients.accounts.AccountServiceClient;
-import com.capsule.corp.infrastructure.http.controller.clients.transactions.TransactionsServiceClient;
+import com.capsule.corp.infrastructure.http.clients.accounts.AccountServiceClient;
+import com.capsule.corp.infrastructure.http.clients.accounts.resources.AccountDetailedResponse;
+import com.capsule.corp.infrastructure.http.clients.transactions.TransactionsServiceClient;
+import com.capsule.corp.infrastructure.http.clients.transactions.resources.TransactionsResponse;
+import com.capsule.corp.infrastructure.http.resources.Statement;
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.time.Month;
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class StatementService {
+  private final PdfService pdfService;
+  private final StatementMapper statementMapper;
+  private final StatementRepository statementRepository;
+  private final AccountServiceClient accountServiceClient;
+  private final TransactionsServiceClient transactionsServiceClient;
 
-    // private final StatementRepository statementRepository;
-    private final AccountServiceClient accountServiceClient;
-    private final TransactionsServiceClient transactionsServiceClient;
-    private final StatementCleanupService cleanupService;
+  public String requestStatement(final HttpServletRequest urlData, final UUID accountNumber) {
 
-    public String requestStatement(final String accountNumber, final String timePeriod) {
+    String link = null;
+    AccountDetailedResponse accountDetails = accountServiceClient.getAccount(accountNumber);
 
-        /*
+    if (accountDetails.isSuccess()) {
+      TransactionsResponse transactionsDetails =
+          transactionsServiceClient.getTransactions(accountNumber);
+      byte[] statementFile = pdfService.generatePdfStatement(accountDetails, transactionsDetails);
+      String extension = pdfService.generateExtension();
 
-            1. Make call to account-service (via accountServiceClient) to check if client's account is in OPEN status
-                IF account is OPEN:
-                    a. Make call to transaction-service (via transactionsServiceClient) to get transactions for given time period
-                    b. Generate a PDF doc and Generate a temporary link to access that PDF
-                    c. Save doc, link and set an expiresAt (for when the link should expire) in temp_statements table via statementRepository. (NB: This table should have a expiresAt column)
-                    d. trigger cleanupService
-                    e. Return the link
-                IF account is CLOSED:
-                    throw AccountClosedException
-        */
+      Statement statement = statementMapper.mapStatement(statementFile, extension);
+      statementRepository.save(statement);
 
-        return null;
+      link =
+          (urlData.getScheme() + "://" + urlData.getServerName() + ":" + urlData.getServerPort())
+              .concat(extension);
     }
 
-    public void getStatement(final String link) {
+    return link;
+  }
 
-        /*
+  public byte[] getStatement(final String extension) {
 
-            1. Check if link exists in temp_statements table
-                IF it does:
-                    return PDF
-                IF not:
-                    ~ link may have either been deleted or was never generated ~
-                    throw NoLinkException (i.e., user should request statement again)
+    byte[] statementFile = null;
+    Optional<Statement> statement = statementRepository.findByExtension(extension);
 
-        */
+    if (statement.isPresent()) {
+      validateLink(statement.get());
+      statementFile = statement.get().getStatementFile();
     }
 
-    public void pdfGenerator(final String transaction_data, final String balance_data) {
-        /*
+    // if statement.isEmpty() should throw or return a 204
 
-        Generate a pdf statement
-        return pdf statement to requestStatement()
+    return statementFile;
+  }
 
-        */
+  private void validateLink(Statement statement) {
+    Duration duration = Duration.between(statement.getCreatedAt(), LocalDateTime.now());
+
+    if (Math.abs(duration.toMinutes()) > 5) {
+      statementRepository.delete(statement);
+      log.error("Link is only valid for 5 minutes");
+      throw new LinkExpiredException("Statement link has expired");
     }
-
-    public void linkGenerator() {
-        /*
-
-        Generate a link
-        return link to to requestStatement()
-
-        */
-    }
+  }
 }
