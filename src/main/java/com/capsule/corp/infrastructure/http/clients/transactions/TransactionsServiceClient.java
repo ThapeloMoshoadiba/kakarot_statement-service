@@ -22,23 +22,18 @@ public class TransactionsServiceClient {
   private final RestClient transactionServiceRestClient;
 
   public TransactionsResponse getTransactions(final UUID accountNumber) {
-    try {
-      ResponseEntity<TransactionsResponse> response =
-          transactionServiceRestClient
-              .method(HttpMethod.GET)
-              .uri(
-                  UriComponentsBuilder.fromHttpUrl(config.getBaseUrl())
-                      .queryParam("accountNumber", accountNumber)
-                      .toUriString())
-              .contentType(MediaType.APPLICATION_JSON)
-              .retrieve()
-              .toEntity(new ParameterizedTypeReference<>() {});
 
-      response.getBody().setSuccess(true);
-      return response.getBody();
-    } catch (Exception e) {
-      log.error("Error Getting Transactions for Account: [{}] [{}]", accountNumber, e.getMessage());
-    }
-    return TransactionsResponse.builder().success(false).build();
+    ResponseEntity<TransactionsResponse> response =
+        transactionServiceRestClient
+            .method(HttpMethod.GET)
+            .uri(
+                UriComponentsBuilder.fromHttpUrl(config.getBaseUrl())
+                    .queryParam("accountNumber", accountNumber)
+                    .toUriString())
+            .contentType(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .toEntity(new ParameterizedTypeReference<>() {});
+
+    return response.getBody();
   }
 }
