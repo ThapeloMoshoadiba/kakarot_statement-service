@@ -22,6 +22,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 app:
+  api:
+    version: @project.version@
   integration:
     account-service:
       base-url: http://localhost:8081/api/v1/account-service/account
