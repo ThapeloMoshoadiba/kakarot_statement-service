@@ -8,6 +8,5 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class StatementResponse {
-  String link;
-  boolean success;
+  private String link;
 }

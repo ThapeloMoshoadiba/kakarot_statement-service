@@ -1,4 +1,4 @@
-package com.capsule.corp.config;
+package com.capsule.corp.common.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

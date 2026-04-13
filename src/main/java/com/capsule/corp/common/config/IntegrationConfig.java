@@ -1,4 +1,4 @@
-package com.capsule.corp.config;
+package com.capsule.corp.common.config;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,7 @@
 package com.capsule.corp.infrastructure.http.clients.accounts;
 
-import com.capsule.corp.config.AppConfiguration;
+import com.capsule.corp.common.config.AppConfiguration;
+import com.capsule.corp.common.exceptions.IntegrationException;
 import com.capsule.corp.infrastructure.http.clients.accounts.resources.AccountDetailedResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class AccountServiceClient {
   private final RestClient accountServiceRestClient;
 
   public AccountDetailedResponse getAccount(final UUID accountNumber) {
-    try {
+
       ResponseEntity<AccountDetailedResponse> response =
           accountServiceRestClient
               .method(HttpMethod.GET)
@@ -34,10 +35,10 @@ public class AccountServiceClient {
               .retrieve()
               .toEntity(new ParameterizedTypeReference<>() {});
 
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        throw new IntegrationException("Unable to Retreive Account");
+      }
+
       return response.getBody();
-    } catch (Exception e) {
-      log.error("Error Getting Account: [{}] [{}]", accountNumber, e.getMessage());
-    }
-    return AccountDetailedResponse.builder().success(false).build();
   }
 }

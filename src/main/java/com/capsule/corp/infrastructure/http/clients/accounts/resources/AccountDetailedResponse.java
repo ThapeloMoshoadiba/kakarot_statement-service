@@ -9,8 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class AccountDetailedResponse {
-  ClientDetails clientDetails;
-  List<Account> accounts;
-  String reason;
-  boolean success;
+  private ClientDetails clientDetails;
+  private List<Account> accounts;
 }

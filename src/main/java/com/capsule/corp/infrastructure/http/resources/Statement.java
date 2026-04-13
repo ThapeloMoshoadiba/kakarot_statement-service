@@ -21,9 +21,9 @@ public class Statement {
 
   @Id
   @Column(name = "statement_id", nullable = false, updatable = false)
-  UUID statementId;
+  private UUID statementId;
 
-  LocalDateTime createdAt;
-  byte[] statementFile;
-  String extension;
+  private LocalDateTime createdAt;
+  private byte[] statementFile;
+  private String extension;
 }

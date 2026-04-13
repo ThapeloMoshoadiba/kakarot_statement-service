@@ -10,8 +10,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class StatementTransaction {
 
-  String timestamp;
-  String transactionId;
-  String transactionType;
-  BigDecimal amount;
+  private String timestamp;
+  private String transactionId;
+  private String transactionType;
+  private BigDecimal amount;
 }

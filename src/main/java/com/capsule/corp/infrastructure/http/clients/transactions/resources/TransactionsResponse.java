@@ -10,7 +10,7 @@ import lombok.Data;
 @Builder
 public class TransactionsResponse {
 
-  List<Transaction> transactions;
-  BigDecimal balance;
-  boolean success;
+  private List<Transaction> transactions;
+  private BigDecimal balance;
+  private boolean success;
 }

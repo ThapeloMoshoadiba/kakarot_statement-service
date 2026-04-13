@@ -43,7 +43,7 @@ public class StatementController {
   @Operation(summary = "Get Statement")
   @GetMapping("/{extension}")
   @Hidden
-  public ResponseEntity<byte[]> getStatement(@PathVariable String extension) {
+  public ResponseEntity<byte[]> getStatement(@PathVariable final String extension) {
     return statementService.getStatement(extension);
   }
 }

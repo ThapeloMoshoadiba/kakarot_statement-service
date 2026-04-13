@@ -14,16 +14,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Account {
 
-  String accountId;
-  LocalDateTime createdAt;
-  String cifNumber;
-  UUID accountNumber;
-  String accountStatus;
-  BigDecimal initialCreditAmount;
-  LocalDateTime blockedAt;
-  String reasonForBlock;
-  LocalDateTime unblockedAt;
-  String reasonForUnblock;
-  LocalDateTime closedAt;
-  String reasonForClose;
+  private String accountId;
+  private LocalDateTime createdAt;
+  private String cifNumber;
+  private UUID accountNumber;
+  private String accountStatus;
+  private BigDecimal initialCreditAmount;
+  private LocalDateTime blockedAt;
+  private String reasonForBlock;
+  private LocalDateTime unblockedAt;
+  private String reasonForUnblock;
+  private LocalDateTime closedAt;
+  private String reasonForClose;
 }

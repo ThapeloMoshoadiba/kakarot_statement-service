@@ -1,6 +1,6 @@
 package com.capsule.corp.infrastructure.http.clients.transactions;
 
-import com.capsule.corp.config.AppConfiguration;
+import com.capsule.corp.common.config.AppConfiguration;
 import com.capsule.corp.infrastructure.http.clients.transactions.resources.TransactionsResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
