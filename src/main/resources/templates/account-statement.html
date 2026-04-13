@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bank Statement</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .bank-name { font-size: 18px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #000; padding: 6px; }
+        th { background-color: #eee; }
+        .right { text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="bank-name">Capsule Corp Bank</div>
+    <div>Account Statement</div>
+</div>
+
+<div>
+    <span><b>Account Holder:</b> <span th:text="${accountHolder}"></span></span><br/>
+    <span><b>Account Number:</b> <span th:text="${accountNumber}"></span></span><br/>
+    <span><b>Statement Date:</b> <span th:text="${statementDate}"></span></span>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Reference</th>
+        <th>Transaction Type</th>
+        <th class="right">Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="tx : ${transactions}">
+        <td th:text="${tx.timestamp}"></td>
+        <td th:text="${tx.transactionId}"></td>
+        <td th:text="${tx.transactionType}"></td>
+        <td class="right" th:text="${tx.amount != null ? #numbers.formatDecimal(tx.amount, 1, 2) : '-'}">></td>
+    </tr>
+    </tbody>
+</table>
+
+<div style="width: 40%; float: right;">
+    <table>
+        <tr>
+            <td><b>Balance</b></td>
+            <td class="right" th:text="${#numbers.formatDecimal(balance, 1, 2)}"></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

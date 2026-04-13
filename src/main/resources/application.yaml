@@ -1,3 +1,35 @@
 spring:
   application:
     name: statement-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kakarot_db?currentSchema=statement_service
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+    # use vault (locally) to store passwords (i.e., passwords controlling DB access)
+    # Or use cypher text instead (Thami's advice)
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  api:
+    version: @project.version@
+  integration:
+    account-service:
+      base-url: http://localhost:8081/api/v1/account-service/account
+    transaction-service:
+      base-url: http://localhost:8082/api/v1/transaction-service/transactions
+
+server:
+  port: 8083
+
